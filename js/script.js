@@ -11,8 +11,10 @@ const url = getWebsocketUrl();
 const config = getConfig();
 const deepgramApiKey = getDeepgramApiKey();
 
+
+
 const toolManager = new ToolManager();
-toolManager.registerTool('googleSearch', new GoogleSearchTool());
+toolManager.registerTool('googleSearch', new GoogleSearchTool(process.env.SERPER_API_KEY));
 
 const chatManager = new ChatManager();
 

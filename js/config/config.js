@@ -1,10 +1,10 @@
 export const getWebsocketUrl = () => {
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = localStorage.getItem('apiKey') || process.env.GEMENI_API_KEY;
     return `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
 };
 
 export const getDeepgramApiKey = () => {
-    return localStorage.getItem('deepgramApiKey') || '';
+    return localStorage.getItem('deepgramApiKey') || process.env.DEEPGRAM_API_KEY;
 };
 
 // Audio Configurations
@@ -17,49 +17,54 @@ const thresholds = {
     3: "BLOCK_LOW_AND_ABOVE"
 }
 
-export const getConfig = () => ({
-    model: 'models/gemini-2.0-flash-exp',
-    generationConfig: {
-        temperature: parseFloat(localStorage.getItem('temperature')) || 1.8,
-        top_p: parseFloat(localStorage.getItem('top_p')) || 0.95,
-        top_k: parseInt(localStorage.getItem('top_k')) || 65,
-        responseModalities: "audio",
-        speechConfig: {
-            voiceConfig: { 
-                prebuiltVoiceConfig: { 
-                    voiceName: localStorage.getItem('voiceName') || 'Aoede'
+export const getConfig = () => {
+    const systemInstructions = localStorage.getItem('systemInstructions') || "You are a helpful assistant that speaks in a natural and engaging manner. You can also search the web for information.";
+    const date = `Today's date is ${new Date().toLocaleDateString()}.`;
+
+    return {
+        model: 'models/gemini-2.0-flash-exp',
+        generationConfig: {
+            temperature: parseFloat(localStorage.getItem('temperature')) || 1.8,
+            top_p: parseFloat(localStorage.getItem('top_p')) || 0.95,
+            top_k: parseInt(localStorage.getItem('top_k')) || 65,
+            responseModalities: "audio",
+            speechConfig: {
+                voiceConfig: { 
+                    prebuiltVoiceConfig: { 
+                        voiceName: localStorage.getItem('voiceName') || 'Aoede'
+                    }
                 }
             }
-        }
-    },
-    systemInstruction: {
-        parts: [{
-            text: localStorage.getItem('systemInstructions') || "You are a helpful assistant"
-        }]
-    },
-    tools: {
-        functionDeclarations: [],
-    },
-    safetySettings: [
-        {
-            "category": "HARM_CATEGORY_HARASSMENT",
-            "threshold": thresholds[localStorage.getItem('harassmentThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
         },
-        {
-            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-            "threshold": thresholds[localStorage.getItem('dangerousContentThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+        systemInstruction: {
+            parts: [{
+                text: `${systemInstructions} ${date}`, 
+            }]
         },
-        {
-            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            "threshold": thresholds[localStorage.getItem('sexuallyExplicitThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+        tools: {
+            functionDeclarations: [],
         },
-        {
-            "category": "HARM_CATEGORY_HATE_SPEECH",
-            "threshold": thresholds[localStorage.getItem('hateSpeechThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
-        },
-        {
-            "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
-            "threshold": thresholds[localStorage.getItem('civicIntegrityThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
-        }
-    ]
-});
+        safetySettings: [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": thresholds[localStorage.getItem('harassmentThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": thresholds[localStorage.getItem('dangerousContentThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": thresholds[localStorage.getItem('sexuallyExplicitThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": thresholds[localStorage.getItem('hateSpeechThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+            },
+            {
+                "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
+                "threshold": thresholds[localStorage.getItem('civicIntegrityThreshold')] || "HARM_BLOCK_THRESHOLD_UNSPECIFIED"
+            }
+        ]
+    };
+};
