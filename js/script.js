@@ -14,7 +14,7 @@ const deepgramApiKey = getDeepgramApiKey();
 
 
 const toolManager = new ToolManager();
-toolManager.registerTool('googleSearch', new GoogleSearchTool(process.env.SERPER_API_KEY));
+toolManager.registerTool('googleSearch', new GoogleSearchTool());
 
 const chatManager = new ChatManager();
 
