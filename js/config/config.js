@@ -1,10 +1,10 @@
 export const getWebsocketUrl = () => {
-    const apiKey = localStorage.getItem('apiKey') || process.env.GEMENI_API_KEY;
+    const apiKey = localStorage.getItem('apiKey');
     return `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
 };
 
 export const getDeepgramApiKey = () => {
-    return localStorage.getItem('deepgramApiKey') || process.env.DEEPGRAM_API_KEY;
+    return localStorage.getItem('deepgramApiKey');
 };
 
 // Audio Configurations
