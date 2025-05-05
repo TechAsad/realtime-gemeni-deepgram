@@ -7,6 +7,9 @@ import { ChatManager } from './chat/chat-manager.js';
 
 import { setupEventListeners } from './dom/events.js';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const url = getWebsocketUrl();
 const config = getConfig();
 const deepgramApiKey = getDeepgramApiKey();
@@ -14,7 +17,9 @@ const deepgramApiKey = getDeepgramApiKey();
 
 
 const toolManager = new ToolManager();
-toolManager.registerTool('googleSearch', new GoogleSearchTool());
+const serperApiKey = process.env.SERPER_API_KEY;
+toolManager.registerTool('googleSearch', new GoogleSearchTool(serperApiKey));
+
 
 const chatManager = new ChatManager();
 

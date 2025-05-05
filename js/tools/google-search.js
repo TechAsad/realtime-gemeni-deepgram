@@ -1,5 +1,8 @@
 export class GoogleSearchTool {
     constructor(apiKey) {
+        if (!apiKey) {
+            throw new Error('Serper API key is required for Google Search Tool');
+        }
         this.apiKey = apiKey;
         this.baseUrl = 'https://google.serper.dev/search';
     }
@@ -28,12 +31,17 @@ export class GoogleSearchTool {
 
     async execute(args) {
         try {
+            if (!this.apiKey) {
+                throw new Error('Serper API key is not configured');
+            }
+
             const { query, limit = 5 } = args;
             
             const headers = new Headers({
                 'X-API-KEY': this.apiKey,
                 'Content-Type': 'application/json'
             });
+
 
             const response = await fetch(this.baseUrl, {
                 method: 'POST',
@@ -58,6 +66,7 @@ export class GoogleSearchTool {
             }));
 
         } catch (error) {
+            console.error('Google Search Tool error:', error);
             throw new Error(`Search failed: ${error.message}`);
         }
     }
